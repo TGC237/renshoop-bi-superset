@@ -1,0 +1,30 @@
+version: "3.8"
+services:
+  superset-redis:
+    image: redis:7-alpine
+    container_name: superset_redis
+    networks:
+      - proxy-network
+
+  superset:
+    image: apache/superset:latest
+    container_name: superset_app
+    restart: unless-stopped
+    environment:
+      - DB_TYPE=postgresql
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=superset_admin
+      - DB_PASS=lQDfiSzhjPQGW1IVzgpi
+      - DB_NAME=superset
+      - SUPERSET_SECRET_KEY=une_cle_au_hasard_de_40_caracteres
+    depends_on:
+      - superset-redis
+    networks:
+      - proxy-network
+    expose:
+      - "8088"
+
+networks:
+  proxy-network:
+    external: true
